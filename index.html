@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gary 🐶 - Your Code Puppy Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐶</text></svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="puppy-emoji">🐶</span>
+                    <h1>Gary</h1>
+                    <p class="tagline">Your sassy, playful AI code assistant</p>
+                </div>
+                <div class="header-controls">
+                    <button class="theme-btn" onclick="toggleTheme()" title="Toggle Theme">🎨</button>
+                    <div class="settings-btn" onclick="toggleSettings()">⚙️</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Panel -->
+        <div id="settingsPanel" class="settings-panel">
+            <div class="settings-content">
+                <h3>🔧 API Configuration</h3>
+                <div class="api-config">
+                    <label for="apiProvider">AI Provider:</label>
+                    <select id="apiProvider" onchange="updateApiConfig()">
+                        <option value="openai">OpenAI (GPT-4/3.5)</option>
+                        <option value="gemini">Google Gemini</option>
+                        <option value="anthropic">Anthropic Claude</option>
+                    </select>
+                    
+                    <label for="apiKey">API Key:</label>
+                    <input type="password" id="apiKey" placeholder="Enter your API key">
+                    
+                    <label for="model">Model:</label>
+                    <select id="model">
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </select>
+                    
+                    <button onclick="saveApiConfig()" class="save-btn">💾 Save Config</button>
+                    <button onclick="testApiConnection()" class="test-btn">🧪 Test Connection</button>
+                </div>
+                
+                <h3>🎯 Gary's Personality</h3>
+                <div class="personality-config">
+                    <label>
+                        <input type="checkbox" id="sassyMode" checked> Extra Sassy Mode
+                    </label>
+                    <label>
+                        <input type="checkbox" id="puppyEmojis" checked> Puppy Emojis
+                    </label>
+                    <label>
+                        <input type="checkbox" id="codeOptimizations" checked> Pedantic Code Reviews
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Interface -->
+        <div class="chat-container">
+            <div id="chatMessages" class="chat-messages">
+                <div class="message assistant-message">
+                    <div class="avatar">🐶</div>
+                    <div class="message-content">
+                        <strong>Gary:</strong> WOOF! Hey there! 🎾 I'm Gary, your sassy AI code puppy! I'm here to help you write, debug, refactor, and explain code. No bloated IDEs or expensive subscriptions needed - just pure, playful assistance!
+                        <br><br>
+                        <strong>What I can do:</strong>
+                        <ul>
+                            <li>🔨 Generate, modify, and explain code</li>
+                            <li>🐛 Debug and fix issues</li>
+                            <li>📁 Manage files and projects</li>
+                            <li>🔍 Analyze and optimize code</li>
+                            <li>🎯 Follow best practices (DRY, SOLID, YAGNI)</li>
+                        </ul>
+                        
+                        <strong>To get started:</strong> Configure your API key in settings ⚙️, then ask me anything! Try "create a Python web scraper" or "explain this JavaScript function"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="file-upload-area" id="fileUploadArea">
+                    <input type="file" id="fileInput" multiple accept=".js,.py,.html,.css,.json,.md,.txt,.jsx,.tsx,.ts,.vue,.php,.java,.cpp,.c,.rb,.go,.rs,.swift">
+                    <label for="fileInput" class="upload-label">
+                        📁 Upload Files
+                    </label>
+                </div>
+                
+                <div class="input-area">
+                    <textarea 
+                        id="chatInput" 
+                        placeholder="Ask Gary anything! (e.g., 'create a React component' or 'debug this Python code')"
+                        onkeydown="handleKeyPress(event)"
+                    ></textarea>
+                    <button id="sendButton" onclick="sendMessage()">
+                        <span class="send-icon">🚀</span>
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Manager Sidebar -->
+        <div id="fileManager" class="file-manager">
+            <div class="file-manager-header">
+                <h3>📁 Project Files</h3>
+                <button onclick="toggleFileManager()" class="close-btn">×</button>
+            </div>
+            <div id="fileList" class="file-list">
+                <p class="no-files">No files uploaded yet. Upload some files to get started!</p>
+            </div>
+        </div>
+
+        <!-- Code Editor Modal -->
+        <div id="codeEditor" class="code-editor-modal">
+            <div class="editor-header">
+                <span id="editorTitle">📝 Code Editor</span>
+                <div class="editor-controls">
+                    <button onclick="saveFile()" class="save-btn">💾 Save</button>
+                    <button onclick="downloadFile()" class="download-btn">⬇️ Download</button>
+                    <button onclick="closeEditor()" class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="editor-content">
+                <textarea id="codeTextarea" spellcheck="false"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="puppy-loading">🐶</div>
+            <p>Gary is thinking...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="gary-core.js"></script>
+    <script src="gary-ai.js"></script>
+    <script src="gary-files.js"></script>
+</body>
+</html>

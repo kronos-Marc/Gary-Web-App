@@ -1,0 +1,24 @@
+{
+  "name": "gary-web",
+  "version": "1.0.0",
+  "description": "Gary - Your playful AI code assistant on the web! 🐶",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'Gary Web App - Open index.html in your browser!'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "author": "Michael Pfaffenberger",
+  "license": "MIT",
+  "keywords": [
+    "ai",
+    "code-assistant",
+    "claude",
+    "openai",
+    "gemini",
+    "web-app"
+  ]
+}
